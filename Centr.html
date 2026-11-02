@@ -1,0 +1,191 @@
+<title>Центр заготовки</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+:root{
+  --bg:#f3f1ec; --surface:#ffffff; --border:#d8d3c8; --fg:#1c1a16; --fg-dim:#6b6558;
+  --accent:#c4541f; --mono:'JetBrains Mono',ui-monospace,Consolas,monospace; --sans:'Inter',system-ui,sans-serif;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#15140f; --surface:#1e1c16; --border:#38352a; --fg:#eeeae0; --fg-dim:#978f7c; --accent:#e07942; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#15140f; --surface:#1e1c16; --border:#38352a; --fg:#eeeae0; --fg-dim:#978f7c; --accent:#e07942; color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{
+  background:var(--bg); color:var(--fg); font-family:var(--sans); margin:0;
+  padding-left:max(16px,env(safe-area-inset-left,0px)); padding-right:max(16px,env(safe-area-inset-right,0px));
+  padding-block:20px;
+}
+.wrap{max-width:520px;margin:0 auto;display:flex;flex-direction:column;gap:14px}
+h1{font-size:17px;font-weight:600;margin:0 0 2px;letter-spacing:-.01em}
+.sub{color:var(--fg-dim);font-size:12.5px;margin:0 0 4px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px}
+.refcard{display:flex;align-items:center;gap:10px;padding:10px 12px}
+.refcard .axis-letter{
+  width:26px;height:26px;border-radius:7px;background:var(--accent);color:#fff;
+  display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-weight:700;font-size:13px;flex:0 0 auto;
+}
+.refval{
+  flex:0 1 140px;min-width:0;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--fg);
+  font-family:var(--mono);font-size:16px;padding:7px 9px;font-variant-numeric:tabular-nums;font-weight:600;
+}
+.reflbl{font-size:11px;color:var(--fg-dim);font-family:var(--mono);text-transform:uppercase;letter-spacing:.04em}
+.row{display:flex;gap:8px;align-items:center}
+.row>div{flex:1;min-width:0}
+label{display:block;font-size:11px;color:var(--fg-dim);margin-bottom:4px;font-family:var(--mono);text-transform:uppercase;letter-spacing:.04em}
+input[type=number]{
+  width:100%;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--fg);
+  font-family:var(--mono);font-size:16px;padding:10px 9px;font-variant-numeric:tabular-nums;
+}
+input:focus{outline:2px solid var(--accent);outline-offset:-1px}
+.inwrap{position:relative}
+.inwrap input{padding-right:34px}
+.pm{
+  position:absolute;right:4px;top:50%;transform:translateY(-50%);width:28px;height:28px;
+  border:1px solid var(--border);background:var(--surface);color:var(--fg-dim);border-radius:5px;
+  font-family:var(--mono);font-size:13px;line-height:1;cursor:pointer;
+}
+.pm:active{transform:translateY(-50%) scale(.92)}
+.plus{flex:0 0 auto;width:18px;text-align:center;color:var(--fg-dim);font-family:var(--mono);font-size:14px;padding-top:14px}
+.result{
+  border:1px solid var(--accent);border-radius:6px;padding:10px 11px;margin-top:12px;
+  font-family:var(--mono);font-size:14px;background:color-mix(in srgb, var(--accent) 10%, var(--bg));
+  display:flex;justify-content:space-between;align-items:center;gap:8px;
+}
+.result .lbl{color:var(--fg-dim);font-size:11px;text-transform:uppercase;letter-spacing:.04em}
+.result b{color:var(--accent);font-size:17px}
+.btn{
+  border:1px solid var(--border);background:var(--surface);color:var(--fg);border-radius:6px;
+  padding:10px 12px;font-size:13.5px;font-family:var(--sans);cursor:pointer;font-weight:500;width:100%;margin-top:10px;
+}
+.btn:active{transform:translateY(1px)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+h2{font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:var(--fg-dim);margin:0 0 2px;font-family:var(--mono)}
+.log{display:flex;flex-direction:column;gap:0;margin-top:8px;max-height:320px;overflow-y:auto}
+.log-row{
+  display:flex;gap:8px;align-items:baseline;padding:8px 0;border-bottom:1px solid var(--border);
+  font-family:var(--mono);font-size:13px;
+}
+.log-row:last-child{border-bottom:none}
+.log-row .t{color:var(--fg-dim);flex:0 0 auto;width:56px}
+.log-row .expr{flex:1;min-width:0;color:var(--fg-dim)}
+.log-row .expr b{color:var(--fg)}
+.empty{color:var(--fg-dim);font-size:12.5px;padding:8px 0}
+.clearlog{font-size:11px;color:var(--fg-dim);background:none;border:none;cursor:pointer;text-decoration:underline;padding:0}
+</style>
+
+<div class="wrap">
+  <div>
+    <h1>Центр заготовки</h1>
+    <p class="sub">Точка 1 и точка 2 с щупа → центр = (1+2)/2.</p>
+  </div>
+
+  <div class="card refcard">
+    <span class="axis-letter">Z</span>
+    <input type="number" inputmode="decimal" step="any" id="refZ" class="refval">
+    <span class="reflbl">подсказка</span>
+  </div>
+
+  <div class="card">
+    <div class="row">
+      <div><label>точка 1</label>
+        <div class="inwrap"><input type="number" inputmode="decimal" step="any" id="p1" placeholder="0"><button class="pm" id="pm1" type="button">±</button></div>
+      </div>
+      <div class="plus">+</div>
+      <div><label>точка 2</label>
+        <div class="inwrap"><input type="number" inputmode="decimal" step="any" id="p2" placeholder="0"><button class="pm" id="pm2" type="button">±</button></div>
+      </div>
+    </div>
+    <div class="result"><span class="lbl">центр</span><b id="resval">—</b></div>
+    <button class="btn primary" id="logBtn">Записать в журнал</button>
+  </div>
+
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:baseline">
+      <h2>Журнал</h2>
+      <button class="clearlog" id="clearLog">очистить</button>
+    </div>
+    <div class="log" id="logList"></div>
+  </div>
+</div>
+
+<script>
+let log = [];
+
+const fmt = n => { n = Math.round(n*1000)/1000; return Object.is(n,-0)?0:n; };
+const now = () => {
+  const d = new Date();
+  return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');
+};
+
+const p1 = document.getElementById('p1');
+const p2 = document.getElementById('p2');
+const resval = document.getElementById('resval');
+
+function readPair(){
+  if(p1.value === '' || p2.value === '') return null;
+  const a = parseFloat(p1.value);
+  const b = parseFloat(p2.value);
+  if(isNaN(a) || isNaN(b)) return null;
+  return {a, b, c: (a+b)/2};
+}
+
+function updateResult(){
+  const r = readPair();
+  resval.textContent = r ? fmt(r.c) : '—';
+}
+p1.addEventListener('input', updateResult);
+p2.addEventListener('input', updateResult);
+
+function toggleSign(el){
+  if(el.value === '') return;
+  el.value = el.value.startsWith('-') ? el.value.slice(1) : '-' + el.value;
+  updateResult();
+}
+document.getElementById('pm1').addEventListener('click', ()=>toggleSign(p1));
+document.getElementById('pm2').addEventListener('click', ()=>toggleSign(p2));
+
+function commit(){
+  const r = readPair();
+  if(!r){
+    log.push({t: now(), text: `заполни обе точки`});
+    renderLog();
+    return;
+  }
+  log.push({t: now(), text: `(${fmt(r.a)} + ${fmt(r.b)}) / 2 = <b>${fmt(r.c)}</b>`});
+  renderLog();
+}
+document.getElementById('logBtn').addEventListener('click', commit);
+
+function renderLog(){
+  const logList = document.getElementById('logList');
+  logList.innerHTML = '';
+  if(log.length === 0){
+    logList.innerHTML = '<div class="empty">Журнал пуст</div>';
+    return;
+  }
+  [...log].reverse().forEach(entry => {
+    const el = document.createElement('div');
+    el.className = 'log-row';
+    el.innerHTML = `<span class="t">${entry.t}</span><span class="expr">${entry.text}</span>`;
+    logList.appendChild(el);
+  });
+}
+document.getElementById('clearLog').addEventListener('click', ()=>{ log=[]; renderLog(); });
+
+renderLog();
+
+const refZ = document.getElementById('refZ');
+try {
+  const saved = localStorage.getItem('refZ');
+  refZ.value = saved !== null ? saved : '222.962';
+} catch(e) {
+  refZ.value = '222.962';
+}
+refZ.addEventListener('input', () => {
+  try { localStorage.setItem('refZ', refZ.value); } catch(e) {}
+});
+</script>
