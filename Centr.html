@@ -123,6 +123,13 @@ h2{font-size:13px;text-transform:uppercase;letter-spacing:.05em;color:var(--fg-d
 
 <script>
 let log = [];
+try {
+  const savedLog = localStorage.getItem('log');
+  if(savedLog) log = JSON.parse(savedLog);
+} catch(e) {}
+function saveLog(){
+  try { localStorage.setItem('log', JSON.stringify(log)); } catch(e) {}
+}
 
 const fmt = n => { n = Math.round(n*1000)/1000; return Object.is(n,-0)?0:n; };
 const now = () => {
@@ -161,10 +168,12 @@ function commit(){
   const r = readPair();
   if(!r){
     log.push({t: now(), text: `заполни обе точки`});
+    saveLog();
     renderLog();
     return;
   }
   log.push({t: now(), text: `(${fmt(r.a)} + ${fmt(r.b)}) / 2 = <b>${fmt(r.c)}</b>`});
+  saveLog();
   renderLog();
 }
 document.getElementById('logBtn').addEventListener('click', commit);
@@ -183,7 +192,7 @@ function renderLog(){
     logList.appendChild(el);
   });
 }
-document.getElementById('clearLog').addEventListener('click', ()=>{ log=[]; renderLog(); });
+document.getElementById('clearLog').addEventListener('click', ()=>{ log=[]; saveLog(); renderLog(); });
 
 renderLog();
 
