@@ -47,7 +47,16 @@ input[type=number]{
 }
 input:focus{outline:2px solid var(--accent);outline-offset:-1px}
 .inwrap{position:relative}
-.inwrap input{padding-right:58px}
+.inwrap input{padding-right:104px}
+.clearfield{
+  position:absolute;right:56px;top:50%;transform:translateY(-50%);width:42px;height:42px;
+  border:1px solid var(--border);background:var(--surface);color:var(--fg-dim);border-radius:8px;
+  font-size:23px;line-height:1;cursor:pointer;
+}
+.clearfield:active{transform:translateY(-50%) scale(.92)}
+.refinput{position:relative;flex:1;min-width:0}
+.refinput .refval{width:100%;padding-right:58px}
+.refinput .clearfield{right:7px}
 .pm{
   position:absolute;right:7px;top:50%;transform:translateY(-50%);width:42px;height:42px;
   border:1px solid var(--border);background:var(--surface);color:var(--fg-dim);border-radius:8px;
@@ -93,17 +102,17 @@ h2{font-size:13px;text-transform:uppercase;letter-spacing:.05em;color:var(--fg-d
 
   <div class="card refcard">
     <span class="axis-letter">Z</span>
-    <input type="number" inputmode="decimal" step="any" autocomplete="off" autocorrect="off" spellcheck="false" id="refZ" class="refval">
+    <div class="refinput"><input type="number" inputmode="decimal" step="any" autocomplete="off" autocorrect="off" spellcheck="false" id="refZ" class="refval"><button class="clearfield" type="button" data-clear="refZ" title="Очистить" aria-label="Очистить Z">×</button></div>
   </div>
 
   <div class="card">
     <div class="row">
       <div><label>точка 1</label>
-        <div class="inwrap"><input type="number" inputmode="decimal" step="any" autocomplete="off" autocorrect="off" spellcheck="false" id="p1" placeholder="0"><button class="pm" id="pm1" type="button">±</button></div>
+        <div class="inwrap"><input type="number" inputmode="decimal" step="any" autocomplete="off" autocorrect="off" spellcheck="false" id="p1" placeholder="0"><button class="clearfield" type="button" data-clear="p1" title="Очистить" aria-label="Очистить точку 1">×</button><button class="pm" id="pm1" type="button">±</button></div>
       </div>
       <div class="plus">+</div>
       <div><label>точка 2</label>
-        <div class="inwrap"><input type="number" inputmode="decimal" step="any" autocomplete="off" autocorrect="off" spellcheck="false" id="p2" placeholder="0"><button class="pm" id="pm2" type="button">±</button></div>
+        <div class="inwrap"><input type="number" inputmode="decimal" step="any" autocomplete="off" autocorrect="off" spellcheck="false" id="p2" placeholder="0"><button class="clearfield" type="button" data-clear="p2" title="Очистить" aria-label="Очистить точку 2">×</button><button class="pm" id="pm2" type="button">±</button></div>
       </div>
     </div>
     <div class="result"><span class="lbl">центр</span><b id="resval">—</b></div>
@@ -163,6 +172,15 @@ function toggleSign(el){
 }
 document.getElementById('pm1').addEventListener('click', ()=>toggleSign(p1));
 document.getElementById('pm2').addEventListener('click', ()=>toggleSign(p2));
+
+document.querySelectorAll('[data-clear]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const input = document.getElementById(btn.dataset.clear);
+    input.value = '';
+    input.dispatchEvent(new Event('input', {bubbles:true}));
+    input.focus();
+  });
+});
 
 function commit(){
   const r = readPair();
